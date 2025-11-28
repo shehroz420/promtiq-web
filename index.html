@@ -3,17 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PromtIQ Chat</title>
+  <title>PromtIQ - Premium AI Assistant</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="header">PromtIQ</div>
+  <!-- Premium Header -->
+  <div class="header">
+    <h1>PromtIQ</h1>
+  </div>
 
-  <div class="chat-box" id="chatBox"></div>
+  <!-- Chat Container -->
+  <div class="chat-box" id="chatBox">
+    
+    <!-- Welcome Message (will be removed after first message) -->
+    <div class="welcome-message" id="welcomeMessage">
+      <h2>How Can I Help You This Morning?</h2>
+      <p>I'm here to assist with anything you need</p>
+    </div>
 
+    <!-- Suggestion Pills (will be removed after first message) -->
+    <div class="suggestions" id="suggestions">
+      <div class="suggestion-pill" onclick="useSuggestion('Write an email')">
+        ✍️ Write an email
+      </div>
+      <div class="suggestion-pill" onclick="useSuggestion('Explain a concept')">
+        🧠 Explain a concept
+      </div>
+      <div class="suggestion-pill" onclick="useSuggestion('Plan my day')">
+        📅 Plan my day
+      </div>
+      <div class="suggestion-pill" onclick="useSuggestion('Create content')">
+        🎨 Create content
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Premium Input Area -->
   <div class="input-area">
-    <input type="text" id="userInput" placeholder="Type your message..." />
+    <input 
+      type="text" 
+      id="userInput" 
+      placeholder="Type your message..." 
+      onkeypress="handleKeyPress(event)"
+    />
     <button onclick="sendMessage()">Send</button>
   </div>
 
