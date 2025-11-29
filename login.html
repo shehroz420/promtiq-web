@@ -280,7 +280,28 @@
   </div>
 </div>
 
-<script type="module" src="auth.js"></script>
+<script>
+  // Simple login validation
+  document.getElementById('loginBtn').addEventListener('click', function() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorElement = document.getElementById('error');
+
+    if (!email || !password) {
+      errorElement.textContent = 'Please fill in all fields';
+      return;
+    }
+
+    if (!email.includes('@')) {
+      errorElement.textContent = 'Please enter a valid email';
+      return;
+    }
+
+    // Add your authentication logic here
+    console.log('Login attempt with:', email);
+    errorElement.textContent = '';
+  });
+</script>
 
 </body>
 </html>
