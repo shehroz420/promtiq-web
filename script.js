@@ -151,15 +151,72 @@ function useSuggestion(text) {
   sendMessage();
 }
 
-// 🧠 NEW: Clear all memory
+// 🧠 FIXED: Clear all memory - NO MORE LOGIN SCREEN FLASH
 function clearMemory() {
-  if (confirm('Clear all conversation history? This cannot be undone.')) {
-    conversationHistory = [];
-    localStorage.removeItem(MEMORY_KEY);
-    
-    // Reload page to show welcome screen
-    location.reload();
+  // Prevent default behavior
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
   }
+  
+  if (confirm('Clear all conversation history? This cannot be undone.')) {
+    try {
+      // Clear memory arrays
+      conversationHistory = [];
+      
+      // Clear localStorage
+      localStorage.removeItem(MEMORY_KEY);
+      
+      // Remove all chat messages from DOM
+      const box = document.getElementById('chatBox');
+      if (box) {
+        // Remove all message divs
+        const messages = box.querySelectorAll('.msg');
+        messages.forEach(msg => msg.remove());
+        
+        // Remove typing indicator if exists
+        const typing = document.getElementById('typing');
+        if (typing) typing.remove();
+      }
+      
+      // Reset first message flag
+      isFirstMessage = true;
+      
+      // Recreate welcome message and suggestions
+      if (box && !document.getElementById('welcomeMessage')) {
+        const welcomeHTML = `
+          <div class="welcome-message" id="welcomeMessage">
+            <h2>How Can I Help You This Morning?</h2>
+            <p>I'm here to assist with anything you need</p>
+          </div>
+          <div class="suggestions" id="suggestions">
+            <div class="suggestion-pill" onclick="useSuggestion('Write an email')">
+              ✍️ Write an email
+            </div>
+            <div class="suggestion-pill" onclick="useSuggestion('Explain a concept')">
+              🧠 Explain a concept
+            </div>
+            <div class="suggestion-pill" onclick="useSuggestion('Plan my day')">
+              📅 Plan my day
+            </div>
+            <div class="suggestion-pill" onclick="useSuggestion('Create content')">
+              🎨 Create content
+            </div>
+          </div>
+        `;
+        box.innerHTML = welcomeHTML;
+      }
+      
+      console.log('Chat history cleared successfully');
+      
+    } catch (error) {
+      console.error('Error clearing memory:', error);
+      alert('Error clearing chat. Please try again.');
+    }
+  }
+  
+  // Return false to prevent any navigation
+  return false;
 }
 
 // Your original Enter key listener - NOT CHANGED
