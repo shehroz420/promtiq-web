@@ -5,8 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZenovaAI - Premium AI Assistant</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Login Overlay Styles */
+    .login-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      width: 350px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    .login-box h2 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: #764ba2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .login-box button:hover {
+      background: #667eea;
+    }
+
+    .login-box .error {
+      color: red;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- 🔹 LOGIN OVERLAY -->
+  <div class="login-container">
+    <div class="login-box">
+      <h2>Welcome Back!</h2>
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button id="loginBtn">Login</button>
+      <p class="error" id="error"></p>
+    </div>
+  </div>
 
   <!-- Premium Header with Clear Button -->
   <div class="header">
@@ -18,7 +88,7 @@
   </div>
 
   <!-- Chat Container -->
-  <div class="chat-box" id="chatBox">
+  <div class="chat-box" id="chatBox" style="display:none;"> <!-- hidden initially -->
     
     <!-- Welcome Message (will be removed after first message) -->
     <div class="welcome-message" id="welcomeMessage">
@@ -45,7 +115,7 @@
   </div>
 
   <!-- Premium Input Area -->
-  <div class="input-area">
+  <div class="input-area" id="chatInputArea" style="display:none;"> <!-- hidden initially -->
     <input 
       type="text" 
       id="userInput" 
@@ -56,7 +126,7 @@
   </div>
 
   <script src="script.js"></script>
+  <script type="module" src="auth.js"></script> <!-- Login/Auth JS -->
+
 </body>
 </html>
-<!-- Existing content ke andar jahan suitable ho -->
-<a href="login.html">Login</a>
