@@ -165,6 +165,44 @@
       transform: translateY(0);
     }
 
+    /* Google Sign-In Button */
+    .google-btn {
+      background: white !important;
+      color: #1f2937 !important;
+      border: 2px solid #e5e7eb !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px !important;
+    }
+
+    .google-btn:hover {
+      background: #f9fafb !important;
+      border-color: #2dd4bf !important;
+      transform: translateY(-2px);
+    }
+
+    .divider-or {
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .divider-or::before,
+    .divider-or::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .divider-or span {
+      padding: 0 15px;
+    }
+
     .login-box .error {
       color: #ef4444;
       margin-top: 15px;
@@ -229,6 +267,48 @@
     .forgot-password a:hover {
       color: #14b8a6;
       text-decoration: underline;
+    }
+
+    /* Logout Button Styles */
+    .logout-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      transition: all 0.3s;
+      z-index: 1000;
+      display: none;
+    }
+
+    .logout-btn:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+    }
+
+    /* User Email Display */
+    .user-email {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      font-size: 14px;
+      color: #1f2937;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 1000;
+      display: none;
+      font-weight: 500;
     }
 
     /* ===== RESPONSIVE - MOBILE OPTIMIZATION ===== */
@@ -307,6 +387,20 @@
         font-size: 13px;
         margin-top: 12px;
       }
+
+      .logout-btn {
+        top: 10px;
+        right: 10px;
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .user-email {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
     }
 
     /* Extra small screens (phones in portrait) */
@@ -358,6 +452,12 @@
 </head>
 <body>
 
+  <!-- 🔹 USER EMAIL DISPLAY -->
+  <div class="user-email" id="userEmailDisplay"></div>
+
+  <!-- 🔹 LOGOUT BUTTON -->
+  <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+
   <!-- 🔹 UPDATED LOGIN OVERLAY -->
   <div class="login-container" id="loginOverlay">
     <div class="login-box">
@@ -376,6 +476,16 @@
       </div>
 
       <button id="loginBtn">Sign In</button>
+
+      <div class="divider-or">
+        <span>OR</span>
+      </div>
+
+      <!-- 🔥 GOOGLE SIGN-IN BUTTON -->
+      <button class="google-btn" id="googleLoginBtn">
+        <span style="font-size: 20px;">🔍</span>
+        Sign in with Google
+      </button>
 
       <div class="forgot-password">
         <a href="#">Forgot your password?</a>
