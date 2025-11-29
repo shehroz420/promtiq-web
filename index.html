@@ -6,75 +6,292 @@
   <title>ZenovaAI - Premium AI Assistant</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Login Overlay Styles */
+    /* ===== NEW LOGIN OVERLAY STYLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     .login-container {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 9999;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* Animated background circles */
+    .login-container::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.15), transparent);
+      border-radius: 50%;
+      top: -100px;
+      left: -100px;
+      animation: float 8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .login-container::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent);
+      border-radius: 50%;
+      bottom: -100px;
+      right: -100px;
+      animation: float 10s ease-in-out infinite reverse;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(50px, 50px); }
     }
 
     .login-box {
-      background: white;
-      padding: 40px;
-      border-radius: 15px;
-      width: 350px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 60px 50px;
+      border-radius: 24px;
+      width: 480px;
+      max-width: 95%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 100px rgba(45, 212, 191, 0.1);
       text-align: center;
+      animation: slideUp 0.6s ease-out;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2dd4bf, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
     }
 
     .login-box h2 {
-      margin-bottom: 30px;
-      color: #333;
+      margin-bottom: 10px;
+      font-size: 32px;
+      color: #1f2937;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 15px;
+      margin-bottom: 35px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 500;
     }
 
     .login-box input {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
       font-size: 16px;
+      transition: all 0.3s;
+      background: #f9fafb;
+      box-sizing: border-box;
+    }
+
+    .login-box input:focus {
+      border-color: #2dd4bf;
+      box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.1);
+      outline: none;
+      background: white;
     }
 
     .login-box button {
       width: 100%;
-      padding: 12px;
-      background: #764ba2;
+      padding: 16px;
+      background: linear-gradient(135deg, #2dd4bf, #14b8a6);
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 15px;
+      margin-top: 25px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
     }
 
     .login-box button:hover {
-      background: #667eea;
+      background: linear-gradient(135deg, #14b8a6, #0d9488);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(45, 212, 191, 0.4);
+    }
+
+    .login-box button:active {
+      transform: translateY(0);
     }
 
     .login-box .error {
-      color: red;
-      margin-top: 10px;
+      color: #ef4444;
+      margin-top: 15px;
       font-size: 14px;
+      font-weight: 500;
+      min-height: 20px;
+    }
+
+    .divider {
+      margin: 30px 0;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .security-info {
+      background: linear-gradient(135deg, #f0fdfa, #ecfeff);
+      border-left: 4px solid #2dd4bf;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 25px;
+      text-align: left;
+    }
+
+    .security-info h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      color: #0f766e;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .security-info h3::before {
+      content: '🔒';
+      font-size: 18px;
+    }
+
+    .security-info ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #115e59;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .security-info li {
+      margin-bottom: 6px;
+    }
+
+    .forgot-password {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .forgot-password a {
+      color: #2dd4bf;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .forgot-password a:hover {
+      color: #14b8a6;
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .login-box {
+        padding: 40px 30px;
+        width: 100%;
+      }
+
+      .login-box h2 {
+        font-size: 26px;
+      }
+
+      .security-info {
+        padding: 15px;
+      }
+
+      .security-info ul {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- 🔹 LOGIN OVERLAY -->
+  <!-- 🔹 UPDATED LOGIN OVERLAY -->
   <div class="login-container" id="loginOverlay">
     <div class="login-box">
+      <div class="logo">ZenovaAI</div>
       <h2>Welcome Back!</h2>
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
-      <button id="loginBtn">Login</button>
+      <p class="subtitle">Please login to access your account</p>
+      
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email" autocomplete="email">
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+
+      <button id="loginBtn">Sign In</button>
+
+      <div class="forgot-password">
+        <a href="#">Forgot your password?</a>
+      </div>
+
       <p class="error" id="error"></p>
+
+      <div class="divider"></div>
+
+      <!-- Security Instructions -->
+      <div class="security-info">
+        <h3>Security Guidelines</h3>
+        <ul>
+          <li>Always use your registered email address to login</li>
+          <li>Never share your password with anyone</li>
+          <li>Ensure you're on a secure internet connection</li>
+          <li>Log out after using shared or public devices</li>
+          <li>Enable two-factor authentication for extra security</li>
+        </ul>
+      </div>
     </div>
   </div>
 
