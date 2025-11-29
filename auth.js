@@ -7,7 +7,7 @@ import {
   signOut 
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-// Firebase Web config
+// Firebase Web config (tumhara)
 const firebaseConfig = {
   apiKey: "AIzaSyCnstr_3cL6sxlLdUMixynmjXuX_fKQRRQ",
   authDomain: "zenova-ai-fe0e7.firebaseapp.com",
@@ -31,7 +31,13 @@ if (loginBtn) {
 
     signInWithEmailAndPassword(auth, email, pass)
       .then(() => {
-        window.location.href = "dashboard.html";
+        // Hide login overlay
+        const loginOverlay = document.querySelector('.login-container');
+        if (loginOverlay) loginOverlay.style.display = 'none';
+
+        // Show chat interface
+        const chatApp = document.getElementById('chatApp');
+        if (chatApp) chatApp.style.display = 'block';
       })
       .catch((err) => {
         document.getElementById("error").innerText = err.message;
@@ -39,4 +45,26 @@ if (loginBtn) {
   };
 }
 
-export { onAuthStateChanged, signOut };
+// Optional: Auto-logout check / redirect if needed
+onAuthStateChanged(auth, (user) => {
+  const loginOverlay = document.querySelector('.login-container');
+  const chatApp = document.getElementById('chatApp');
+
+  if (user) {
+    if (loginOverlay) loginOverlay.style.display = 'none';
+    if (chatApp) chatApp.style.display = 'block';
+  } else {
+    if (loginOverlay) loginOverlay.style.display = 'flex';
+    if (chatApp) chatApp.style.display = 'none';
+  }
+});
+
+// Logout function (optional)
+export const logoutUser = () => {
+  signOut(auth).then(() => {
+    const loginOverlay = document.querySelector('.login-container');
+    const chatApp = document.getElementById('chatApp');
+    if (loginOverlay) loginOverlay.style.display = 'flex';
+    if (chatApp) chatApp.style.display = 'none';
+  });
+};
