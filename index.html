@@ -269,29 +269,15 @@
       text-decoration: underline;
     }
 
-    /* Logout Button Styles */
+    /* Logout Button Styles - Removed fixed positioning */
     .logout-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 10px 20px;
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-      transition: all 0.3s;
-      z-index: 1000;
       display: none;
     }
 
-    .logout-btn:hover {
-      background: linear-gradient(135deg, #dc2626, #b91c1c);
+    .header-logout-btn:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
     }
 
     /* User Email Display */
@@ -452,11 +438,8 @@
 </head>
 <body>
 
-  <!-- 🔹 USER EMAIL DISPLAY -->
+  <!-- 🔹 USER EMAIL DISPLAY - Removed old logout button -->
   <div class="user-email" id="userEmailDisplay"></div>
-
-  <!-- 🔹 LOGOUT BUTTON -->
-  <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
 
   <!-- 🔹 UPDATED LOGIN OVERLAY -->
   <div class="login-container" id="loginOverlay">
@@ -509,13 +492,19 @@
     </div>
   </div>
 
-  <!-- Premium Header with Clear Button -->
-  <div class="header">
+  <!-- Premium Header with Clear Button and Logout -->
+  <div class="header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
     <h1>ZenovaAI</h1>
-    <!-- 🧠 NEW: Clear Memory Button -->
-    <button class="clear-btn" onclick="clearMemory()" title="Clear conversation history">
-      🗑️
-    </button>
+    <div style="display: flex; gap: 10px;">
+      <!-- 🧠 Clear Memory Button -->
+      <button class="clear-btn" onclick="clearMemory()" title="Clear conversation history" style="padding: 10px 15px; background: #f3f4f6; border: none; border-radius: 8px; cursor: pointer; font-size: 18px;">
+        🗑️
+      </button>
+      <!-- 🚪 Logout Button in Header -->
+      <button class="header-logout-btn" id="headerLogoutBtn" style="display: none; padding: 10px 20px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
+        🚪 Logout
+      </button>
+    </div>
   </div>
 
   <!-- Chat Container -->
