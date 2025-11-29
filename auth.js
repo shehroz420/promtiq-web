@@ -24,36 +24,41 @@ const chatInputArea = document.getElementById('chatInputArea');
 const loginBtn = document.getElementById('loginBtn');
 const errorMsg = document.getElementById('error');
 
-// 🔹 Initially hide chat interface
+// 🔹 Hide chat interface initially
 chatBox.style.display = 'none';
 chatInputArea.style.display = 'none';
 
 // 🔹 Login Button Click
-loginBtn.addEventListener('click', async () => {
+loginBtn.addEventListener('click', () => {
   const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const pass = document.getElementById('password').value;
 
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    // Hide login overlay
-    loginOverlay.style.display = 'none';
-    // Show chat interface
-    chatBox.style.display = 'block';
-    chatInputArea.style.display = 'flex';
-  } catch (err) {
-    errorMsg.innerText = err.message;
+  if (!email || !pass) {
+    errorMsg.innerText = "Please enter email and password";
+    return;
   }
+
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => {
+      // Hide login overlay
+      loginOverlay.style.display = 'none';
+      // Show chat interface
+      chatBox.style.display = 'block';
+      chatInputArea.style.display = 'flex';
+      errorMsg.innerText = '';
+    })
+    .catch(err => {
+      errorMsg.innerText = err.message;
+    });
 });
 
-// 🔹 Auto Show Chat ONLY AFTER checking auth state (fixes flash)
+// 🔹 Auto Show Chat if Already Logged In
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is logged in
     loginOverlay.style.display = 'none';
     chatBox.style.display = 'block';
     chatInputArea.style.display = 'flex';
   } else {
-    // User not logged in
     loginOverlay.style.display = 'flex';
     chatBox.style.display = 'none';
     chatInputArea.style.display = 'none';
