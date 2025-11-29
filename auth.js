@@ -1,13 +1,8 @@
-// Import Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut 
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+// auth.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-// Firebase Web config (tumhara)
+// 🔹 Your Firebase Web App Config
 const firebaseConfig = {
   apiKey: "AIzaSyCnstr_3cL6sxlLdUMixynmjXuX_fKQRRQ",
   authDomain: "zenova-ai-fe0e7.firebaseapp.com",
@@ -18,53 +13,39 @@ const firebaseConfig = {
   measurementId: "G-RM6Y9C473E"
 };
 
-// Initialize Firebase
+// 🔹 Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+const auth = getAuth(app);
 
-// Login Button Logic
+// 🔹 Login Button Click
 const loginBtn = document.getElementById("loginBtn");
-if (loginBtn) {
-  loginBtn.onclick = () => {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
+loginBtn.onclick = () => {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
 
-    signInWithEmailAndPassword(auth, email, pass)
-      .then(() => {
-        // Hide login overlay
-        const loginOverlay = document.querySelector('.login-container');
-        if (loginOverlay) loginOverlay.style.display = 'none';
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => {
+      // Hide login overlay
+      document.querySelector('.login-container').style.display = 'none';
+      
+      // Show chat interface
+      document.getElementById('chatBox').style.display = 'block';
+      document.getElementById('chatInputArea').style.display = 'flex';
+    })
+    .catch(err => {
+      document.getElementById("error").innerText = err.message;
+    });
+};
 
-        // Show chat interface
-        const chatApp = document.getElementById('chatApp');
-        if (chatApp) chatApp.style.display = 'block';
-      })
-      .catch((err) => {
-        document.getElementById("error").innerText = err.message;
-      });
-  };
-}
-
-// Optional: Auto-logout check / redirect if needed
+// 🔹 Auto Show Chat if Already Logged In
 onAuthStateChanged(auth, (user) => {
-  const loginOverlay = document.querySelector('.login-container');
-  const chatApp = document.getElementById('chatApp');
-
   if (user) {
-    if (loginOverlay) loginOverlay.style.display = 'none';
-    if (chatApp) chatApp.style.display = 'block';
+    document.querySelector('.login-container').style.display = 'none';
+    document.getElementById('chatBox').style.display = 'block';
+    document.getElementById('chatInputArea').style.display = 'flex';
   } else {
-    if (loginOverlay) loginOverlay.style.display = 'flex';
-    if (chatApp) chatApp.style.display = 'none';
+    document.querySelector('.login-container').style.display = 'flex';
+    document.getElementById('chatBox').style.display = 'none';
+    document.getElementById('chatInputArea').style.display = 'none';
   }
 });
-
-// Logout function (optional)
-export const logoutUser = () => {
-  signOut(auth).then(() => {
-    const loginOverlay = document.querySelector('.login-container');
-    const chatApp = document.getElementById('chatApp');
-    if (loginOverlay) loginOverlay.style.display = 'flex';
-    if (chatApp) chatApp.style.display = 'none';
-  });
-};
