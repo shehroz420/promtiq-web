@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginBtn = document.getElementById('loginBtn');
   const googleLoginBtn = document.getElementById('googleLoginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
+  const headerLogoutBtn = document.getElementById('headerLogoutBtn');
   const userEmailDisplay = document.getElementById('userEmailDisplay');
   const errorMsg = document.getElementById('error');
 
@@ -161,20 +162,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Logout functionality
+  // Logout functionality (both buttons)
+  const handleLogout = () => {
+    if (confirm('Are you sure you want to logout?')) {
+      signOut(auth)
+        .then(() => {
+          console.log('User logged out');
+        })
+        .catch((error) => {
+          console.error('Logout error:', error);
+          alert('Error logging out. Please try again.');
+        });
+    }
+  };
+
   if (logoutBtn) {
-    logoutBtn.onclick = () => {
-      if (confirm('Are you sure you want to logout?')) {
-        signOut(auth)
-          .then(() => {
-            console.log('User logged out');
-          })
-          .catch((error) => {
-            console.error('Logout error:', error);
-            alert('Error logging out. Please try again.');
-          });
-      }
-    };
+    logoutBtn.onclick = handleLogout;
+  }
+
+  if (headerLogoutBtn) {
+    headerLogoutBtn.onclick = handleLogout;
   }
 
   // Enter key support
@@ -213,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (chatBox) chatBox.style.display = 'block';
       if (chatInputArea) chatInputArea.style.display = 'flex';
       if (logoutBtn) logoutBtn.style.display = 'block';
+      if (headerLogoutBtn) headerLogoutBtn.style.display = 'block';
     } else {
       console.log('No user logged in');
       
@@ -226,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (chatBox) chatBox.style.display = 'none';
       if (chatInputArea) chatInputArea.style.display = 'none';
       if (logoutBtn) logoutBtn.style.display = 'none';
+      if (headerLogoutBtn) headerLogoutBtn.style.display = 'none';
     }
   });
 
