@@ -68,7 +68,7 @@
 <body>
 
   <!-- 🔹 LOGIN OVERLAY -->
-  <div class="login-container">
+  <div class="login-container" id="loginOverlay">
     <div class="login-box">
       <h2>Welcome Back!</h2>
       <input type="email" id="email" placeholder="Email" />
@@ -89,14 +89,11 @@
 
   <!-- Chat Container -->
   <div class="chat-box" id="chatBox" style="display:none;"> <!-- hidden initially -->
-    
-    <!-- Welcome Message (will be removed after first message) -->
     <div class="welcome-message" id="welcomeMessage">
       <h2>How Can I Help You This Morning?</h2>
       <p>I'm here to assist with anything you need</p>
     </div>
 
-    <!-- Suggestion Pills (will be removed after first message) -->
     <div class="suggestions" id="suggestions">
       <div class="suggestion-pill" onclick="useSuggestion('Write an email')">
         ✍️ Write an email
@@ -111,11 +108,10 @@
         🎨 Create content
       </div>
     </div>
-
   </div>
 
   <!-- Premium Input Area -->
-  <div class="input-area" id="chatInputArea" style="display:none;"> <!-- hidden initially -->
+  <div class="input-area" id="chatInputArea" style="display:none;">
     <input 
       type="text" 
       id="userInput" 
