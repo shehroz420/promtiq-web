@@ -231,28 +231,129 @@
       text-decoration: underline;
     }
 
-    /* Responsive */
-    @media (max-width: 600px) {
+    /* Responsive - Mobile Optimization */
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 15px;
+        align-items: flex-start;
+        padding-top: 40px;
+      }
+
       .login-box {
-        padding: 40px 30px;
+        padding: 35px 25px;
         width: 100%;
+        max-width: 400px;
+      }
+
+      .logo {
+        font-size: 28px;
       }
 
       .login-box h2 {
-        font-size: 26px;
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+        margin-bottom: 25px;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+
+      .login-box input {
+        padding: 14px 16px;
+        font-size: 15px;
+      }
+
+      .login-box button {
+        padding: 14px;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+
+      .divider {
+        margin: 20px 0;
       }
 
       .security-info {
         padding: 15px;
+        margin-top: 20px;
+      }
+
+      .security-info h3 {
+        font-size: 14px;
+        margin-bottom: 10px;
       }
 
       .security-info ul {
         font-size: 12px;
+        line-height: 1.6;
+        padding-left: 18px;
+      }
+
+      .security-info li {
+        margin-bottom: 5px;
+      }
+
+      .forgot-password {
+        font-size: 13px;
+        margin-top: 12px;
       }
     }
-  </style>
-</head>
-<body>
+
+    /* Extra small screens */
+    @media (max-width: 400px) {
+      .login-container {
+        padding: 10px;
+        padding-top: 30px;
+      }
+
+      .login-box {
+        padding: 30px 20px;
+      }
+
+      .logo {
+        font-size: 24px;
+      }
+
+      .login-box h2 {
+        font-size: 22px;
+      }
+
+      .subtitle {
+        font-size: 13px;
+      }
+
+      .login-box input {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .login-box button {
+        padding: 12px;
+        font-size: 15px;
+      }
+
+      .security-info {
+        padding: 12px;
+      }
+
+      .security-info h3 {
+        font-size: 13px;
+      }
+
+      .security-info ul {
+        font-size: 11px;
+      }
+    }
 
   <!-- 🔹 UPDATED LOGIN OVERLAY -->
   <div class="login-container" id="loginOverlay">
