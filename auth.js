@@ -1,9 +1,8 @@
-// auth.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 🔹 Firebase Config
+
   const firebaseConfig = {
     apiKey: "AIzaSyCnstr_3cL6sxlLdUMixynmjXuX_fKQRRQ",
     authDomain: "zenova-ai-fe0e7.firebaseapp.com",
@@ -17,14 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // 🔹 DOM Elements
+  // Elements
   const loginOverlay = document.getElementById('loginOverlay');
   const chatBox = document.getElementById('chatBox');
   const chatInputArea = document.getElementById('chatInputArea');
   const loginBtn = document.getElementById('loginBtn');
   const errorMsg = document.getElementById('error');
 
-  // 🔹 Login Button Click
+  // Login button
   loginBtn.onclick = () => {
     const email = document.getElementById("email").value;
     const pass = document.getElementById("password").value;
@@ -40,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   };
 
-  // 🔹 Auto Show Chat if Already Logged In
+  // Auto show chat if already logged in
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loginOverlay.style.display = 'none';
@@ -52,4 +51,5 @@ document.addEventListener('DOMContentLoaded', () => {
       chatInputArea.style.display = 'none';
     }
   });
+
 });
