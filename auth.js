@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Check if we're in login or signup mode
   function isLoginMode() {
-    return document.getElementById('loginToggle')?.classList.contains('active');
+    // Access global variable
+    return window.isLoginMode !== false;
   }
 
   // Main Auth Button (Login/Signup)
