@@ -76,7 +76,7 @@ function addMessage(text, sender) {
   saveToMemory(text, sender);
 }
 
-// Your original sendMessage with minimal additions
+// 🔹 MODIFIED sendMessage to include email for n8n workflow
 async function sendMessage() {
   const input = document.getElementById('userInput');
   const msg = input.value.trim();
@@ -98,31 +98,36 @@ async function sendMessage() {
   showTyping();
 
   try {
-    // 🧠 Send recent history for context - NEW
+    // Send recent history for context
     const recentHistory = conversationHistory.slice(-10).map(m => ({
       role: m.sender === 'user' ? 'user' : 'assistant',
       content: m.text
     }));
 
+    // 🔹 NEW: Email input (dynamic)
+    const emailInput = document.getElementById('userEmail'); // Add <input id="userEmail"> in HTML
+    const currentUserEmail = emailInput ? emailInput.value.trim() : "user@example.com";
+
     const res = await fetch(WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
+        email: currentUserEmail,   // <- NEW FIELD
         query: msg,
-        history: recentHistory // 🧠 Context included
+        history: recentHistory
       })
     });
 
     const data = await res.json();
-    
+
     // Remove typing indicator
     removeTyping();
-    
+
     addMessage(data.reply || "(No response)", 'bot');
   } catch (err) {
     // Remove typing indicator on error too
     removeTyping();
-    
+
     addMessage("(Error connecting to webhook)", 'bot');
   }
 }
@@ -153,7 +158,6 @@ function useSuggestion(text) {
 
 // 🧠 FIXED: Clear all memory - NO MORE LOGIN SCREEN FLASH
 function clearMemory() {
-  // Prevent default behavior
   if (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -161,28 +165,20 @@ function clearMemory() {
   
   if (confirm('Clear all conversation history? This cannot be undone.')) {
     try {
-      // Clear memory arrays
       conversationHistory = [];
-      
-      // Clear localStorage
       localStorage.removeItem(MEMORY_KEY);
-      
-      // Remove all chat messages from DOM
+
       const box = document.getElementById('chatBox');
       if (box) {
-        // Remove all message divs
         const messages = box.querySelectorAll('.msg');
         messages.forEach(msg => msg.remove());
-        
-        // Remove typing indicator if exists
+
         const typing = document.getElementById('typing');
         if (typing) typing.remove();
       }
-      
-      // Reset first message flag
+
       isFirstMessage = true;
-      
-      // Recreate welcome message and suggestions
+
       if (box && !document.getElementById('welcomeMessage')) {
         const welcomeHTML = `
           <div class="welcome-message" id="welcomeMessage">
@@ -206,7 +202,7 @@ function clearMemory() {
         `;
         box.innerHTML = welcomeHTML;
       }
-      
+
       console.log('Chat history cleared successfully');
       
     } catch (error) {
@@ -214,8 +210,7 @@ function clearMemory() {
       alert('Error clearing chat. Please try again.');
     }
   }
-  
-  // Return false to prevent any navigation
+
   return false;
 }
 
