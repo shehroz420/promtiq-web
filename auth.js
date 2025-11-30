@@ -27,7 +27,7 @@ let isLoginMode = true;
 
 window.addEventListener('load', () => {
   
-  // Toggle Buttons
+  // Toggle Login/Signup
   document.getElementById('loginToggle')?.addEventListener('click', () => {
     isLoginMode = true;
     document.getElementById('loginToggle').classList.add('active');
@@ -50,7 +50,7 @@ window.addEventListener('load', () => {
     document.getElementById('error').innerText = '';
   });
 
-  // Auth Button
+  // Auth Button (Login/Signup)
   document.getElementById('authBtn')?.addEventListener('click', async () => {
     const email = document.getElementById("email").value;
     const pass = document.getElementById("password").value;
@@ -63,6 +63,16 @@ window.addEventListener('load', () => {
 
     if (!email || !pass) {
       errorMsg.innerText = "Please fill in all fields";
+      return;
+    }
+
+    if (!email.includes('@')) {
+      errorMsg.innerText = "Invalid email format";
+      return;
+    }
+
+    if (pass.length < 6) {
+      errorMsg.innerText = "Password must be at least 6 characters";
       return;
     }
 
@@ -90,6 +100,8 @@ window.addEventListener('load', () => {
         errorMsg.innerText = "Invalid email or password";
       } else if (err.code === 'auth/email-already-in-use') {
         errorMsg.innerText = "Email already exists. Try login.";
+      } else if (err.code === 'auth/weak-password') {
+        errorMsg.innerText = "Password too weak";
       } else {
         errorMsg.innerText = err.message;
       }
@@ -114,7 +126,9 @@ window.addEventListener('load', () => {
     } catch (err) {
       errorMsg.style.color = '#ef4444';
       if (err.code === 'auth/unauthorized-domain') {
-        errorMsg.innerText = "Add domain to Firebase authorized domains";
+        errorMsg.innerText = "Add domain to Firebase";
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        errorMsg.innerText = "Sign-in cancelled";
       } else {
         errorMsg.innerText = err.message;
       }
@@ -124,41 +138,58 @@ window.addEventListener('load', () => {
     }
   });
 
-  // Menu
+  // 3-Dot Menu Toggle
   document.getElementById('menuButton')?.addEventListener('click', (e) => {
     e.stopPropagation();
     document.getElementById('menuDropdown').classList.toggle('show');
   });
 
+  // Close menu on outside click
   document.addEventListener('click', () => {
     document.getElementById('menuDropdown')?.classList.remove('show');
   });
 
   // Logout
   document.getElementById('menuLogout')?.addEventListener('click', async () => {
-    if (confirm('Logout?')) {
+    document.getElementById('menuDropdown')?.classList.remove('show');
+    if (confirm('Are you sure you want to logout?')) {
       await signOut(auth);
     }
   });
 
-  // Profile/Settings (simple alerts for now)
+  // Profile
   document.getElementById('menuProfile')?.addEventListener('click', () => {
-    alert('Profile: ' + (auth.currentUser?.email || 'Not logged in'));
+    document.getElementById('menuDropdown')?.classList.remove('show');
+    const email = auth.currentUser?.email || 'Not logged in';
+    alert('Profile\n\nEmail: ' + email);
   });
 
+  // Settings
   document.getElementById('menuSettings')?.addEventListener('click', () => {
-    alert('Settings coming soon!');
+    document.getElementById('menuDropdown')?.classList.remove('show');
+    alert('Settings feature coming soon!');
   });
 
-  // Auth State
+  // Enter key support
+  ['email', 'password', 'confirmPassword'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('authBtn')?.click();
+      }
+    });
+  });
+
+  // Auth State Observer
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      // User logged in
       document.getElementById('loginOverlay').style.display = 'none';
       document.getElementById('chatBox').style.display = 'block';
       document.getElementById('chatInputArea').style.display = 'flex';
       document.getElementById('userMenu').style.display = 'block';
       document.getElementById('menuUserEmail').innerText = user.email;
     } else {
+      // User logged out
       document.getElementById('loginOverlay').style.display = 'flex';
       document.getElementById('chatBox').style.display = 'none';
       document.getElementById('chatInputArea').style.display = 'none';
