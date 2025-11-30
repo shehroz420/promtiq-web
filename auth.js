@@ -29,18 +29,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginOverlay = document.getElementById('loginOverlay');
   const chatBox = document.getElementById('chatBox');
   const chatInputArea = document.getElementById('chatInputArea');
-  const loginBtn = document.getElementById('loginBtn');
+  const authBtn = document.getElementById('authBtn');
   const googleLoginBtn = document.getElementById('googleLoginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const headerLogoutBtn = document.getElementById('headerLogoutBtn');
-  const userEmailDisplay = document.getElementById('userEmailDisplay');
+  const menuLogout = document.getElementById('menuLogout');
+  const userMenu = document.getElementById('userMenu');
+  const menuUserEmail = document.getElementById('menuUserEmail');
   const errorMsg = document.getElementById('error');
 
-  // Email/Password Login
-  if (loginBtn) {
-    loginBtn.onclick = () => {
+  // Check if we're in login or signup mode
+  function isLoginMode() {
+    return document.getElementById('loginToggle')?.classList.contains('active');
+  }
+
+  // Main Auth Button (Login/Signup)
+  if (authBtn) {
+    authBtn.onclick = () => {
       const email = document.getElementById("email").value;
       const pass = document.getElementById("password").value;
+      const confirmPass = document.getElementById("confirmPassword")?.value;
 
       // Validation
       if (!email || !pass) {
@@ -61,60 +67,43 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // If signup mode, check password confirmation
+      if (!isLoginMode()) {
+        if (!confirmPass) {
+          errorMsg.style.color = '#ef4444';
+          errorMsg.innerText = "Please confirm your password";
+          return;
+        }
+        if (pass !== confirmPass) {
+          errorMsg.style.color = '#ef4444';
+          errorMsg.innerText = "Passwords do not match";
+          return;
+        }
+      }
+
       // Disable button and show loading
-      loginBtn.disabled = true;
-      loginBtn.innerText = "Signing in...";
+      authBtn.disabled = true;
+      const originalText = authBtn.innerText;
+      authBtn.innerText = isLoginMode() ? "Signing in..." : "Creating account...";
       errorMsg.innerText = "";
 
-      // Try to login first
-      signInWithEmailAndPassword(auth, email, pass)
-        .then(() => {
-          errorMsg.style.color = '#10b981';
-          errorMsg.innerText = "Login successful!";
-          loginBtn.disabled = false;
-          loginBtn.innerText = "Sign In";
-        })
-        .catch(err => {
-          // If user doesn't exist, create new account automatically
-          if (err.code === 'auth/invalid-credential' || 
-              err.code === 'auth/user-not-found' || 
-              err.code === 'auth/wrong-password') {
-            
-            errorMsg.style.color = '#f59e0b';
-            errorMsg.innerText = "User not found. Creating new account...";
-            loginBtn.innerText = "Creating account...";
-            
-            // Auto signup
-            createUserWithEmailAndPassword(auth, email, pass)
-              .then(() => {
-                errorMsg.style.color = '#10b981';
-                errorMsg.innerText = "Account created successfully! Logging in...";
-                
-                setTimeout(() => {
-                  loginBtn.disabled = false;
-                  loginBtn.innerText = "Sign In";
-                }, 1000);
-              })
-              .catch(signupErr => {
-                errorMsg.style.color = '#ef4444';
-                
-                if (signupErr.code === 'auth/email-already-in-use') {
-                  errorMsg.innerText = "Email already exists. Please try logging in.";
-                } else if (signupErr.code === 'auth/weak-password') {
-                  errorMsg.innerText = "Password is too weak. Use at least 6 characters.";
-                } else if (signupErr.code === 'auth/invalid-email') {
-                  errorMsg.innerText = "Invalid email format.";
-                } else {
-                  errorMsg.innerText = signupErr.message;
-                }
-                
-                loginBtn.disabled = false;
-                loginBtn.innerText = "Sign In";
-              });
-          } else {
+      if (isLoginMode()) {
+        // LOGIN MODE
+        signInWithEmailAndPassword(auth, email, pass)
+          .then(() => {
+            errorMsg.style.color = '#10b981';
+            errorMsg.innerText = "Login successful!";
+            authBtn.disabled = false;
+            authBtn.innerText = originalText;
+          })
+          .catch(err => {
             errorMsg.style.color = '#ef4444';
             
-            if (err.code === 'auth/invalid-email') {
+            if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
+              errorMsg.innerText = "Invalid email or password. Try signing up instead.";
+            } else if (err.code === 'auth/wrong-password') {
+              errorMsg.innerText = "Incorrect password";
+            } else if (err.code === 'auth/invalid-email') {
               errorMsg.innerText = "Invalid email format";
             } else if (err.code === 'auth/network-request-failed') {
               errorMsg.innerText = "Network error. Check your connection.";
@@ -122,10 +111,38 @@ document.addEventListener('DOMContentLoaded', () => {
               errorMsg.innerText = err.message;
             }
             
-            loginBtn.disabled = false;
-            loginBtn.innerText = "Sign In";
-          }
-        });
+            authBtn.disabled = false;
+            authBtn.innerText = originalText;
+          });
+      } else {
+        // SIGNUP MODE
+        createUserWithEmailAndPassword(auth, email, pass)
+          .then(() => {
+            errorMsg.style.color = '#10b981';
+            errorMsg.innerText = "Account created successfully!";
+            
+            setTimeout(() => {
+              authBtn.disabled = false;
+              authBtn.innerText = originalText;
+            }, 1000);
+          })
+          .catch(err => {
+            errorMsg.style.color = '#ef4444';
+            
+            if (err.code === 'auth/email-already-in-use') {
+              errorMsg.innerText = "Email already exists. Please login instead.";
+            } else if (err.code === 'auth/weak-password') {
+              errorMsg.innerText = "Password is too weak. Use at least 6 characters.";
+            } else if (err.code === 'auth/invalid-email') {
+              errorMsg.innerText = "Invalid email format.";
+            } else {
+              errorMsg.innerText = err.message;
+            }
+            
+            authBtn.disabled = false;
+            authBtn.innerText = originalText;
+          });
+      }
     };
   }
 
@@ -152,6 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
             errorMsg.innerText = "Sign-in cancelled";
           } else if (error.code === 'auth/popup-blocked') {
             errorMsg.innerText = "Popup blocked. Please allow popups.";
+          } else if (error.code === 'auth/unauthorized-domain') {
+            errorMsg.innerText = "Domain not authorized. Contact support.";
           } else {
             errorMsg.innerText = error.message;
           }
@@ -162,12 +181,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Logout functionality (both buttons)
+  // Logout functionality (from 3-dot menu)
   const handleLogout = () => {
     if (confirm('Are you sure you want to logout?')) {
       signOut(auth)
         .then(() => {
           console.log('User logged out');
+          // Close menu
+          document.getElementById('menuDropdown')?.classList.remove('show');
         })
         .catch((error) => {
           console.error('Logout error:', error);
@@ -176,65 +197,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  if (logoutBtn) {
-    logoutBtn.onclick = handleLogout;
-  }
-
-  if (headerLogoutBtn) {
-    headerLogoutBtn.onclick = handleLogout;
+  if (menuLogout) {
+    menuLogout.onclick = handleLogout;
   }
 
   // Enter key support
   const passwordInput = document.getElementById('password');
   const emailInput = document.getElementById('email');
+  const confirmPasswordInput = document.getElementById('confirmPassword');
   
-  if (passwordInput) {
-    passwordInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        loginBtn.click();
-      }
-    });
-  }
-  
-  if (emailInput) {
-    emailInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        loginBtn.click();
-      }
-    });
-  }
+  [passwordInput, emailInput, confirmPasswordInput].forEach(input => {
+    if (input) {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          authBtn?.click();
+        }
+      });
+    }
+  });
 
   // Auto show chat if already logged in
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log('User logged in:', user.email);
       
-      // Show user info
-      if (userEmailDisplay) {
-        userEmailDisplay.innerText = user.email;
-        userEmailDisplay.style.display = 'block';
+      // Update menu with user email
+      if (menuUserEmail) {
+        menuUserEmail.innerText = user.email;
       }
       
       // Show/hide appropriate elements
       loginOverlay.style.display = 'none';
       if (chatBox) chatBox.style.display = 'block';
       if (chatInputArea) chatInputArea.style.display = 'flex';
-      if (logoutBtn) logoutBtn.style.display = 'block';
-      if (headerLogoutBtn) headerLogoutBtn.style.display = 'block';
+      if (userMenu) userMenu.style.display = 'block';
     } else {
       console.log('No user logged in');
-      
-      // Hide user info
-      if (userEmailDisplay) {
-        userEmailDisplay.style.display = 'none';
-      }
       
       // Show/hide appropriate elements
       loginOverlay.style.display = 'flex';
       if (chatBox) chatBox.style.display = 'none';
       if (chatInputArea) chatInputArea.style.display = 'none';
-      if (logoutBtn) logoutBtn.style.display = 'none';
-      if (headerLogoutBtn) headerLogoutBtn.style.display = 'none';
+      if (userMenu) userMenu.style.display = 'none';
     }
   });
 
