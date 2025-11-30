@@ -123,22 +123,112 @@ window.addEventListener('load', () => {
     document.getElementById('userMenuDropdown')?.classList.remove('show');
   });
 
-  document.getElementById('optionProfile')?.addEventListener('click', () => {
-    document.getElementById('userMenuDropdown')?.classList.remove('show');
-    alert('Profile: ' + (auth.currentUser?.email || 'Not logged in'));
-  });
-
-  document.getElementById('optionSettings')?.addEventListener('click', () => {
-    document.getElementById('userMenuDropdown')?.classList.remove('show');
-    alert('Settings coming soon!');
-  });
-
   document.getElementById('optionLogout')?.addEventListener('click', async () => {
     document.getElementById('userMenuDropdown')?.classList.remove('show');
     if (confirm('Logout?')) {
       await signOut(auth);
     }
   });
+
+  window.openSettings = () => {
+    document.getElementById('userMenuDropdown')?.classList.remove('show');
+    document.getElementById('settingsModal')?.classList.add('show');
+    if (auth.currentUser) {
+      document.getElementById('settingsEmail').innerText = auth.currentUser.email;
+    }
+    loadSavedSettings();
+  };
+
+  window.closeSettingsModal = () => {
+    document.getElementById('settingsModal')?.classList.remove('show');
+  };
+
+  window.openProfile = () => {
+    document.getElementById('userMenuDropdown')?.classList.remove('show');
+    document.getElementById('profileModal')?.classList.add('show');
+    if (auth.currentUser) {
+      const email = auth.currentUser.email;
+      document.getElementById('profileUserEmail').innerText = email;
+      document.getElementById('profileAvatarLarge').innerText = email.charAt(0).toUpperCase();
+      const msgCount = localStorage.getItem('zenovaai_messageCount') || '0';
+      document.getElementById('totalMessages').innerText = msgCount;
+    }
+  };
+
+  window.closeProfileModal = () => {
+    document.getElementById('profileModal')?.classList.remove('show');
+  };
+
+  window.toggleDarkMode = () => {
+    document.getElementById('darkModeToggle')?.classList.toggle('active');
+  };
+
+  window.toggleCompactMode = () => {
+    document.getElementById('compactToggle')?.classList.toggle('active');
+  };
+
+  window.toggleNotifications = () => {
+    document.getElementById('notificationsToggle')?.classList.toggle('active');
+  };
+
+  window.toggleSound = () => {
+    document.getElementById('soundToggle')?.classList.toggle('active');
+  };
+
+  window.toggleAnalytics = () => {
+    document.getElementById('analyticsToggle')?.classList.toggle('active');
+  };
+
+  window.clearAllData = () => {
+    if (confirm('⚠️ Delete all data?')) {
+      if (confirm('Cannot be undone. Confirm?')) {
+        localStorage.clear();
+        alert('All data cleared!');
+        location.reload();
+      }
+    }
+  };
+
+  function loadSavedSettings() {
+    try {
+      const settings = JSON.parse(localStorage.getItem('app_settings') || '{}');
+      if (settings.darkMode) document.getElementById('darkModeToggle')?.classList.add('active');
+      if (settings.compact) document.getElementById('compactToggle')?.classList.add('active');
+    } catch(e) {}
+  }
+
+  function saveSettings() {
+    const settings = {
+      darkMode: document.getElementById('darkModeToggle')?.classList.contains('active'),
+      compact: document.getElementById('compactToggle')?.classList.contains('active'),
+      notifications: document.getElementById('notificationsToggle')?.classList.contains('active'),
+      sound: document.getElementById('soundToggle')?.classList.contains('active'),
+      analytics: document.getElementById('analyticsToggle')?.classList.contains('active')
+    };
+    localStorage.setItem('app_settings', JSON.stringify(settings));
+  }
+
+  document.getElementById('closeSettings')?.addEventListener('click', closeSettingsModal);
+  document.getElementById('cancelSettings')?.addEventListener('click', closeSettingsModal);
+  document.getElementById('saveSettings')?.addEventListener('click', () => {
+    saveSettings();
+    closeSettingsModal();
+    alert('Settings saved!');
+  });
+
+  document.getElementById('closeProfile')?.addEventListener('click', closeProfileModal);
+  document.getElementById('closeProfileBtn')?.addEventListener('click', closeProfileModal);
+
+  document.getElementById('settingsModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'settingsModal') closeSettingsModal();
+  });
+
+  document.getElementById('profileModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'profileModal') closeProfileModal();
+  });
+
+  document.getElementById('optionProfile')?.addEventListener('click', openProfile);
+  document.getElementById('optionSettings')?.addEventListener('click', openSettings);
 
   ['email', 'password', 'confirmPassword'].forEach(id => {
     document.getElementById(id)?.addEventListener('keypress', (e) => {
