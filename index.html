@@ -63,9 +63,9 @@
     .login-box {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
-      padding: 60px 50px;
+      padding: 50px 45px;
       border-radius: 24px;
-      width: 480px;
+      width: 450px;
       max-width: 95%;
       box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 100px rgba(45, 212, 191, 0.1);
       text-align: center;
@@ -96,21 +96,49 @@
     }
 
     .login-box h2 {
-      margin-bottom: 10px;
-      font-size: 32px;
+      margin-bottom: 8px;
+      font-size: 28px;
       color: #1f2937;
       font-weight: 600;
     }
 
     .subtitle {
       color: #6b7280;
-      font-size: 15px;
-      margin-bottom: 35px;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    /* Toggle between Login/Signup */
+    .auth-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      background: #f3f4f6;
+      padding: 5px;
+      border-radius: 12px;
+    }
+
+    .auth-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #6b7280;
+    }
+
+    .auth-toggle button.active {
+      background: white;
+      color: #2dd4bf;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .input-group {
       position: relative;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       text-align: left;
     }
 
@@ -118,16 +146,16 @@
       display: block;
       margin-bottom: 8px;
       color: #374151;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
     }
 
     .login-box input {
       width: 100%;
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-radius: 12px;
       border: 2px solid #e5e7eb;
-      font-size: 16px;
+      font-size: 15px;
       transition: all 0.3s;
       background: #f9fafb;
       box-sizing: border-box;
@@ -140,28 +168,28 @@
       background: white;
     }
 
-    .login-box button {
+    .login-box button.primary-btn {
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       background: linear-gradient(135deg, #2dd4bf, #14b8a6);
       color: white;
       border: none;
       border-radius: 12px;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 25px;
+      margin-top: 20px;
       transition: all 0.3s;
       box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
     }
 
-    .login-box button:hover {
+    .login-box button.primary-btn:hover {
       background: linear-gradient(135deg, #14b8a6, #0d9488);
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(45, 212, 191, 0.4);
     }
 
-    .login-box button:active {
+    .login-box button.primary-btn:active {
       transform: translateY(0);
     }
 
@@ -175,7 +203,8 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-top: 15px !important;
+      margin-top: 12px !important;
+      padding: 13px !important;
     }
 
     .google-btn:hover {
@@ -187,9 +216,9 @@
     .divider-or {
       display: flex;
       align-items: center;
-      margin: 25px 0;
+      margin: 20px 0;
       color: #9ca3af;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .divider-or::before,
@@ -205,56 +234,15 @@
 
     .login-box .error {
       color: #ef4444;
-      margin-top: 15px;
-      font-size: 14px;
-      font-weight: 500;
-      min-height: 20px;
-    }
-
-    .divider {
-      margin: 30px 0;
-      border-top: 1px solid #e5e7eb;
-    }
-
-    .security-info {
-      background: linear-gradient(135deg, #f0fdfa, #ecfeff);
-      border-left: 4px solid #2dd4bf;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 25px;
-      text-align: left;
-    }
-
-    .security-info h3 {
-      margin: 0 0 12px 0;
-      font-size: 16px;
-      color: #0f766e;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .security-info h3::before {
-      content: '🔒';
-      font-size: 18px;
-    }
-
-    .security-info ul {
-      margin: 0;
-      padding-left: 20px;
-      color: #115e59;
+      margin-top: 12px;
       font-size: 13px;
-      line-height: 1.8;
-    }
-
-    .security-info li {
-      margin-bottom: 6px;
+      font-weight: 500;
+      min-height: 18px;
     }
 
     .forgot-password {
-      margin-top: 15px;
-      font-size: 14px;
+      margin-top: 12px;
+      font-size: 13px;
     }
 
     .forgot-password a {
@@ -267,17 +255,6 @@
     .forgot-password a:hover {
       color: #14b8a6;
       text-decoration: underline;
-    }
-
-    /* Logout Button Styles - Removed fixed positioning */
-    .logout-btn {
-      display: none;
-    }
-
-    .header-logout-btn:hover {
-      background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
     }
 
     /* User Email Display */
@@ -295,6 +272,131 @@
       z-index: 1000;
       display: none;
       font-weight: 500;
+    }
+
+    /* 3-Dot Menu (ChatGPT Style) */
+    .user-menu {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .menu-button {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      top: 55px;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      min-width: 240px;
+      padding: 8px;
+      display: none;
+      animation: slideDown 0.2s ease-out;
+    }
+
+    .menu-dropdown.show {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-user-info {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 8px;
+    }
+
+    .menu-user-email {
+      font-size: 14px;
+      color: #1f2937;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .menu-user-status {
+      font-size: 12px;
+      color: #10b981;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .menu-item:hover {
+      background: #f3f4f6;
+    }
+
+    .menu-item.logout {
+      color: #ef4444;
+    }
+
+    .menu-item.logout:hover {
+      background: #fee2e2;
+    }
+
+    /* Logout Button - Bottom Left */
+    .header-logout-btn {
+      position: fixed;
+      bottom: 80px;
+      left: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+      transition: all 0.3s;
+      z-index: 1000;
+      display: none;
+    }
+
+    .header-logout-btn:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
     }
 
     /* ===== RESPONSIVE - MOBILE OPTIMIZATION ===== */
@@ -317,11 +419,10 @@
 
       .login-box h2 {
         font-size: 24px;
-        margin-bottom: 8px;
       }
 
       .subtitle {
-        font-size: 14px;
+        font-size: 13px;
         margin-bottom: 25px;
       }
 
@@ -330,67 +431,269 @@
       }
 
       .input-group label {
-        font-size: 13px;
-        margin-bottom: 6px;
+        font-size: 12px;
       }
 
       .login-box input {
-        padding: 14px 16px;
+        padding: 13px 16px;
+        font-size: 14px;
+      }
+
+      .login-box button.primary-btn {
+        padding: 13px;
         font-size: 15px;
       }
 
-      .login-box button {
-        padding: 14px;
-        font-size: 16px;
-        margin-top: 20px;
-      }
-
-      .divider {
-        margin: 20px 0;
-      }
-
-      .security-info {
-        padding: 15px;
-        margin-top: 20px;
-      }
-
-      .security-info h3 {
-        font-size: 14px;
-        margin-bottom: 10px;
-      }
-
-      .security-info ul {
-        font-size: 12px;
-        line-height: 1.6;
-        padding-left: 18px;
-      }
-
-      .security-info li {
-        margin-bottom: 5px;
-      }
-
-      .forgot-password {
-        font-size: 13px;
-        margin-top: 12px;
-      }
-
-      .logout-btn {
-        top: 10px;
-        right: 10px;
-        padding: 8px 16px;
-        font-size: 13px;
-      }
-
-      .user-email {
-        top: 10px;
+      .header-logout-btn {
+        bottom: 70px;
         left: 10px;
-        padding: 8px 12px;
-        font-size: 12px;
+        padding: 10px 18px;
+        font-size: 13px;
+      }
+
+      .user-menu {
+        top: 15px;
+        right: 15px;
+      }
+
+      .menu-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+
+      .menu-dropdown {
+        min-width: 220px;
       }
     }
 
-    /* Extra small screens (phones in portrait) */
-    @media (max-width: 400px) {
+    /* Profile & Settings Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s ease-out;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .modal-header h2 {
+      font-size: 24px;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-modal {
+      background: #f3f4f6;
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-modal:hover {
+      background: #e5e7eb;
+      transform: rotate(90deg);
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2dd4bf, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: 0 auto 20px;
+      color: white;
+      font-weight: 700;
+    }
+
+    .profile-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .profile-email {
+      font-size: 18px;
+      color: #1f2937;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .profile-joined {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: #f9fafb;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2dd4bf;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .settings-section {
+      margin-bottom: 25px;
+    }
+
+    .settings-section h3 {
+      font-size: 16px;
+      color: #1f2937;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background: #f9fafb;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .settings-option:hover {
+      background: #f3f4f6;
+    }
+
+    .settings-option label {
+      font-size: 14px;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      background: #d1d5db;
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-switch.active {
+      background: #2dd4bf;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.3s;
+    }
+
+    .toggle-switch.active::after {
+      left: 26px;
+    }
+
+    .action-button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2dd4bf, #14b8a6);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(45, 212, 191, 0.3);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
       .login-container {
         padding: 10px;
         padding-top: 30px;
@@ -407,46 +710,126 @@
       .login-box h2 {
         font-size: 22px;
       }
-
-      .subtitle {
-        font-size: 13px;
-      }
-
-      .login-box input {
-        padding: 12px 14px;
-        font-size: 14px;
-      }
-
-      .login-box button {
-        padding: 12px;
-        font-size: 15px;
-      }
-
-      .security-info {
-        padding: 12px;
-      }
-
-      .security-info h3 {
-        font-size: 13px;
-      }
-
-      .security-info ul {
-        font-size: 11px;
-      }
     }
   </style>
 </head>
 <body>
 
-  <!-- 🔹 USER EMAIL DISPLAY - Removed old logout button -->
-  <div class="user-email" id="userEmailDisplay"></div>
+  <!-- 🔹 PROFILE MODAL -->
+  <div class="modal" id="profileModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><span>👤</span> Profile</h2>
+        <button class="close-modal" onclick="closeProfile()">×</button>
+      </div>
+      
+      <div class="profile-avatar" id="profileAvatar">U</div>
+      
+      <div class="profile-info">
+        <div class="profile-email" id="profileEmail">user@example.com</div>
+        <div class="profile-joined">Member since Nov 2024</div>
+      </div>
 
-  <!-- 🔹 UPDATED LOGIN OVERLAY -->
+      <div class="profile-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="messageCount">0</div>
+          <div class="stat-label">Messages Sent</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="daysActive">1</div>
+          <div class="stat-label">Days Active</div>
+        </div>
+      </div>
+
+      <button class="action-button btn-primary" onclick="closeProfile()">Close</button>
+    </div>
+  </div>
+
+  <!-- 🔹 SETTINGS MODAL -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><span>⚙️</span> Settings</h2>
+        <button class="close-modal" onclick="closeSettings()">×</button>
+      </div>
+
+      <div class="settings-section">
+        <h3>🔔 Notifications</h3>
+        <div class="settings-option" onclick="toggleSetting('notifications')">
+          <label>Enable notifications</label>
+          <div class="toggle-switch active" id="notificationToggle"></div>
+        </div>
+        <div class="settings-option" onclick="toggleSetting('sound')">
+          <label>Sound effects</label>
+          <div class="toggle-switch active" id="soundToggle"></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>🎨 Appearance</h3>
+        <div class="settings-option" onclick="toggleSetting('darkMode')">
+          <label>Dark mode</label>
+          <div class="toggle-switch" id="darkModeToggle"></div>
+        </div>
+        <div class="settings-option" onclick="toggleSetting('compact')">
+          <label>Compact view</label>
+          <div class="toggle-switch" id="compactToggle"></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>🔒 Privacy</h3>
+        <div class="settings-option" onclick="toggleSetting('analytics')">
+          <label>Analytics & improvements</label>
+          <div class="toggle-switch active" id="analyticsToggle"></div>
+        </div>
+      </div>
+
+      <button class="action-button btn-danger" onclick="confirmClearAllData()">
+        🗑️ Clear All Data
+      </button>
+
+      <button class="action-button btn-primary" onclick="closeSettings()">
+        Save Changes
+      </button>
+    </div>
+  </div>
+
+  <!-- 🔹 3-DOT MENU (ChatGPT Style) -->
+  <div class="user-menu" id="userMenu">
+    <button class="menu-button" id="menuButton">⋮</button>
+    <div class="menu-dropdown" id="menuDropdown">
+      <div class="menu-user-info">
+        <div class="menu-user-email" id="menuUserEmail">user@example.com</div>
+        <div class="menu-user-status">● Active</div>
+      </div>
+      <div class="menu-item" onclick="showProfile()">
+        <span>👤</span>
+        <span>Profile</span>
+      </div>
+      <div class="menu-item" onclick="showSettings()">
+        <span>⚙️</span>
+        <span>Settings</span>
+      </div>
+      <div class="menu-item logout" id="menuLogout">
+        <span>🚪</span>
+        <span>Logout</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 LOGIN/SIGNUP OVERLAY -->
   <div class="login-container" id="loginOverlay">
     <div class="login-box">
       <div class="logo">ZenovaAI</div>
-      <h2>Welcome Back!</h2>
-      <p class="subtitle">Please login to access your account</p>
+      <h2 id="authTitle">Welcome Back!</h2>
+      <p class="subtitle" id="authSubtitle">Please login to access your account</p>
+      
+      <!-- Toggle Login/Signup -->
+      <div class="auth-toggle">
+        <button class="active" id="loginToggle" onclick="switchToLogin()">Login</button>
+        <button id="signupToggle" onclick="switchToSignup()">Sign Up</button>
+      </div>
       
       <div class="input-group">
         <label for="email">Email Address</label>
@@ -458,90 +841,26 @@
         <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
       </div>
 
-      <button id="loginBtn">Sign In</button>
+      <!-- Confirm Password (only for signup) -->
+      <div class="input-group" id="confirmPasswordGroup" style="display: none;">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm your password">
+      </div>
+
+      <button class="primary-btn" id="authBtn">Sign In</button>
 
       <div class="divider-or">
         <span>OR</span>
       </div>
 
       <!-- 🔥 GOOGLE SIGN-IN BUTTON -->
-      <button class="google-btn" id="googleLoginBtn">
+      <button class="google-btn primary-btn" id="googleLoginBtn">
         <span style="font-size: 20px;">🔍</span>
         Sign in with Google
       </button>
 
       <div class="forgot-password">
-        <a href="#">Forgot your password?</a>
+        <a href="#" id="forgotLink">Forgot your password?</a>
       </div>
 
-      <p class="error" id="error"></p>
-
-      <div class="divider"></div>
-
-      <!-- Security Instructions -->
-      <div class="security-info">
-        <h3>Security Guidelines</h3>
-        <ul>
-          <li>Always use your registered email address to login</li>
-          <li>Never share your password with anyone</li>
-          <li>Ensure you're on a secure internet connection</li>
-          <li>Log out after using shared or public devices</li>
-          <li>Enable two-factor authentication for extra security</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Premium Header with Clear Button (Centered ZenovaAI) -->
-  <div class="header">
-    <h1>ZenovaAI</h1>
-    <!-- 🧠 Clear Memory Button -->
-    <button class="clear-btn" onclick="clearMemory()" title="Clear conversation history">
-      🗑️
-    </button>
-  </div>
-
-  <!-- 🚪 Logout Button (Fixed Position) -->
-  <button class="header-logout-btn" id="headerLogoutBtn">
-    🚪 Logout
-  </button>
-
-  <!-- Chat Container -->
-  <div class="chat-box" id="chatBox" style="display:none;"> <!-- hidden initially -->
-    <div class="welcome-message" id="welcomeMessage">
-      <h2>How Can I Help You This Morning?</h2>
-      <p>I'm here to assist with anything you need</p>
-    </div>
-
-    <div class="suggestions" id="suggestions">
-      <div class="suggestion-pill" onclick="useSuggestion('Write an email')">
-        ✍️ Write an email
-      </div>
-      <div class="suggestion-pill" onclick="useSuggestion('Explain a concept')">
-        🧠 Explain a concept
-      </div>
-      <div class="suggestion-pill" onclick="useSuggestion('Plan my day')">
-        📅 Plan my day
-      </div>
-      <div class="suggestion-pill" onclick="useSuggestion('Create content')">
-        🎨 Create content
-      </div>
-    </div>
-  </div>
-
-  <!-- Premium Input Area -->
-  <div class="input-area" id="chatInputArea" style="display:none;">
-    <input 
-      type="text" 
-      id="userInput" 
-      placeholder="Type your message..." 
-      onkeypress="handleKeyPress(event)"
-    />
-    <button onclick="sendMessage()">Send</button>
-  </div>
-
-  <script src="script.js"></script>
-  <script type="module" src="auth.js"></script> <!-- Login/Auth JS -->
-
-</body>
-        </html>
+      <p class="error" id="error"></p
