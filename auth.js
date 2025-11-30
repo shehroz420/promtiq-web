@@ -27,7 +27,6 @@ let isLoginMode = true;
 
 window.addEventListener('load', () => {
   
-  // Toggle Login/Signup
   document.getElementById('loginToggle')?.addEventListener('click', () => {
     isLoginMode = true;
     document.getElementById('loginToggle').classList.add('active');
@@ -50,7 +49,6 @@ window.addEventListener('load', () => {
     document.getElementById('error').innerText = '';
   });
 
-  // Auth Button (Login/Signup)
   document.getElementById('authBtn')?.addEventListener('click', async () => {
     const email = document.getElementById("email").value;
     const pass = document.getElementById("password").value;
@@ -59,20 +57,9 @@ window.addEventListener('load', () => {
     const authBtn = document.getElementById('authBtn');
 
     errorMsg.innerText = "";
-    errorMsg.style.color = '#ef4444';
 
     if (!email || !pass) {
       errorMsg.innerText = "Please fill in all fields";
-      return;
-    }
-
-    if (!email.includes('@')) {
-      errorMsg.innerText = "Invalid email format";
-      return;
-    }
-
-    if (pass.length < 6) {
-      errorMsg.innerText = "Password must be at least 6 characters";
       return;
     }
 
@@ -87,21 +74,17 @@ window.addEventListener('load', () => {
     try {
       if (isLoginMode) {
         await signInWithEmailAndPassword(auth, email, pass);
-        errorMsg.style.color = '#10b981';
-        errorMsg.innerText = "Login successful!";
       } else {
         await createUserWithEmailAndPassword(auth, email, pass);
-        errorMsg.style.color = '#10b981';
-        errorMsg.innerText = "Account created!";
       }
+      errorMsg.style.color = '#10b981';
+      errorMsg.innerText = isLoginMode ? "Login successful!" : "Account created!";
     } catch (err) {
       errorMsg.style.color = '#ef4444';
       if (err.code === 'auth/invalid-credential') {
         errorMsg.innerText = "Invalid email or password";
       } else if (err.code === 'auth/email-already-in-use') {
-        errorMsg.innerText = "Email already exists. Try login.";
-      } else if (err.code === 'auth/weak-password') {
-        errorMsg.innerText = "Password too weak";
+        errorMsg.innerText = "Email already exists";
       } else {
         errorMsg.innerText = err.message;
       }
@@ -111,7 +94,6 @@ window.addEventListener('load', () => {
     }
   });
 
-  // Google Sign-In
   document.getElementById('googleLoginBtn')?.addEventListener('click', async () => {
     const btn = document.getElementById('googleLoginBtn');
     const errorMsg = document.getElementById('error');
@@ -125,52 +107,39 @@ window.addEventListener('load', () => {
       errorMsg.innerText = "Login successful!";
     } catch (err) {
       errorMsg.style.color = '#ef4444';
-      if (err.code === 'auth/unauthorized-domain') {
-        errorMsg.innerText = "Add domain to Firebase";
-      } else if (err.code === 'auth/popup-closed-by-user') {
-        errorMsg.innerText = "Sign-in cancelled";
-      } else {
-        errorMsg.innerText = err.message;
-      }
+      errorMsg.innerText = err.message;
     } finally {
       btn.disabled = false;
       btn.innerHTML = '<span style="font-size: 20px;">🔍</span> Sign in with Google';
     }
   });
 
-  // 3-Dot Menu Toggle
-  document.getElementById('menuButton')?.addEventListener('click', (e) => {
+  document.getElementById('menuTrigger')?.addEventListener('click', (e) => {
     e.stopPropagation();
-    document.getElementById('menuDropdown').classList.toggle('show');
+    document.getElementById('userMenuDropdown')?.classList.toggle('show');
   });
 
-  // Close menu on outside click
   document.addEventListener('click', () => {
-    document.getElementById('menuDropdown')?.classList.remove('show');
+    document.getElementById('userMenuDropdown')?.classList.remove('show');
   });
 
-  // Logout
-  document.getElementById('menuLogout')?.addEventListener('click', async () => {
-    document.getElementById('menuDropdown')?.classList.remove('show');
-    if (confirm('Are you sure you want to logout?')) {
+  document.getElementById('optionProfile')?.addEventListener('click', () => {
+    document.getElementById('userMenuDropdown')?.classList.remove('show');
+    alert('Profile: ' + (auth.currentUser?.email || 'Not logged in'));
+  });
+
+  document.getElementById('optionSettings')?.addEventListener('click', () => {
+    document.getElementById('userMenuDropdown')?.classList.remove('show');
+    alert('Settings coming soon!');
+  });
+
+  document.getElementById('optionLogout')?.addEventListener('click', async () => {
+    document.getElementById('userMenuDropdown')?.classList.remove('show');
+    if (confirm('Logout?')) {
       await signOut(auth);
     }
   });
 
-  // Profile
-  document.getElementById('menuProfile')?.addEventListener('click', () => {
-    document.getElementById('menuDropdown')?.classList.remove('show');
-    const email = auth.currentUser?.email || 'Not logged in';
-    alert('Profile\n\nEmail: ' + email);
-  });
-
-  // Settings
-  document.getElementById('menuSettings')?.addEventListener('click', () => {
-    document.getElementById('menuDropdown')?.classList.remove('show');
-    alert('Settings feature coming soon!');
-  });
-
-  // Enter key support
   ['email', 'password', 'confirmPassword'].forEach(id => {
     document.getElementById(id)?.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
@@ -179,21 +148,18 @@ window.addEventListener('load', () => {
     });
   });
 
-  // Auth State Observer
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // User logged in
       document.getElementById('loginOverlay').style.display = 'none';
       document.getElementById('chatBox').style.display = 'block';
       document.getElementById('chatInputArea').style.display = 'flex';
-      document.getElementById('userMenu').style.display = 'block';
-      document.getElementById('menuUserEmail').innerText = user.email;
+      document.getElementById('userMenuContainer').style.display = 'block';
+      document.getElementById('displayUserEmail').innerText = user.email;
     } else {
-      // User logged out
       document.getElementById('loginOverlay').style.display = 'flex';
       document.getElementById('chatBox').style.display = 'none';
       document.getElementById('chatInputArea').style.display = 'none';
-      document.getElementById('userMenu').style.display = 'none';
+      document.getElementById('userMenuContainer').style.display = 'none';
     }
   });
 });
