@@ -1,21 +1,20 @@
-// Your original webhook
+// ⚡ ZENOVAAI - FULL REFINED CODE
 const WEBHOOK_URL = "https://ahaseeb590.app.n8n.cloud/webhook/Shehrozbhai12";
 
-// Track if first message to remove welcome screen
 let isFirstMessage = true;
-
-// 🧠 MEMORY SYSTEM
 let conversationHistory = [];
 const MEMORY_KEY = 'zenovaai_memory';
 const MAX_HISTORY = 50;
 
-// 🧠 Load saved conversations on page load
+// 🧠 Memory Load: Purani chat wapas lane ke liye
 function loadMemory() {
   try {
     const saved = localStorage.getItem(MEMORY_KEY);
     if (saved) {
       conversationHistory = JSON.parse(saved);
       const box = document.getElementById('chatBox');
+      if (!box) return;
+      
       conversationHistory.forEach(msg => {
         const div = document.createElement('div');
         div.className = `msg ${msg.sender}`;
@@ -25,59 +24,53 @@ function loadMemory() {
       
       if (conversationHistory.length > 0) {
         isFirstMessage = false;
-        const welcome = document.getElementById('welcomeMessage');
-        const suggestions = document.getElementById('suggestions');
-        if (welcome) welcome.remove();
-        if (suggestions) suggestions.remove();
+        hideWelcomeUI();
       }
       box.scrollTop = box.scrollHeight;
     }
-  } catch (err) {
-    console.error('Memory load error:', err);
-  }
+  } catch (err) { console.error('Memory load error:', err); }
 }
 
-// 🧠 Save conversation to memory
+function hideWelcomeUI() {
+  const welcome = document.getElementById('welcomeMessage');
+  const suggestions = document.getElementById('suggestions');
+  if (welcome) welcome.remove();
+  if (suggestions) suggestions.remove();
+}
+
+// 🧠 Save to Local Storage
 function saveToMemory(text, sender) {
-  conversationHistory.push({
-    text: text,
-    sender: sender,
-    timestamp: new Date().toISOString()
-  });
-  if (conversationHistory.length > MAX_HISTORY) {
-    conversationHistory = conversationHistory.slice(-MAX_HISTORY);
-  }
-  try {
-    localStorage.setItem(MEMORY_KEY, JSON.stringify(conversationHistory));
-  } catch (err) {
-    console.error('Memory save error:', err);
-  }
+  conversationHistory.push({ text: text, sender: sender, timestamp: new Date().toISOString() });
+  if (conversationHistory.length > MAX_HISTORY) conversationHistory = conversationHistory.slice(-MAX_HISTORY);
+  localStorage.setItem(MEMORY_KEY, JSON.stringify(conversationHistory));
 }
 
-// Function to add message to UI
+// ✨ Add Message to UI with "No Special Characters" filter
 function addMessage(text, sender) {
   const box = document.getElementById('chatBox');
   if (!box) return;
+  
   const div = document.createElement('div');
   div.className = `msg ${sender}`;
-  div.innerText = text;
+  
+  // 🪄 Aapki condition: Special characters saaf karna (?, !, @, etc)
+  const cleanText = text.replace(/[^\w\s\u0600-\u06FF]/gi, '');
+  
+  div.innerText = cleanText;
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
-  saveToMemory(text, sender);
+  
+  saveToMemory(cleanText, sender);
 }
 
-// 🔹 FULLY FIXED: sendMessage function
+// 🚀 Main Send Function - NO HARDCODED REPLIES HERE
 async function sendMessage() {
   const input = document.getElementById('userInput');
   const msg = input.value.trim();
   if (!msg) return;
 
-  // UI cleanup on first message
   if (isFirstMessage) {
-    const welcome = document.getElementById('welcomeMessage');
-    const suggestions = document.getElementById('suggestions');
-    if (welcome) welcome.remove();
-    if (suggestions) suggestions.remove();
+    hideWelcomeUI();
     isFirstMessage = false;
   }
 
@@ -86,46 +79,33 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const emailInput = document.getElementById('userEmail');
-    const currentUserEmail = emailInput ? emailInput.value.trim() : "user@example.com";
-
+    // n8n ko request bhejna
     const res = await fetch(WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
-        email: currentUserEmail,
         query: msg,
-        history: conversationHistory.slice(-10) 
+        history: conversationHistory.slice(-5) // Sirf last 5 messages context ke liye
       })
     });
 
-    // 1. Get response as Text first (Safest way)
     const rawData = await res.text();
     let botResponse = "";
 
     try {
-      // 2. Try to parse as JSON
+      // JSON format handle karna
       const parsed = JSON.parse(rawData);
-      
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // If n8n returns an array: [ { "output": "..." } ]
-        botResponse = parsed[0].output || parsed[0].reply || parsed[0].text || JSON.stringify(parsed[0]);
-      } else if (typeof parsed === 'object') {
-        // If n8n returns an object: { "output": "..." }
-        botResponse = parsed.output || parsed.reply || parsed.text || JSON.stringify(parsed);
-      } else {
-        botResponse = parsed.toString();
-      }
+      botResponse = parsed.output || parsed.reply || parsed.text || (Array.isArray(parsed) ? parsed[0].output : rawData);
     } catch (e) {
-      // 3. If parsing fails, it's already a plain string
+      // Agar direct text bhej raha hai n8n
       botResponse = rawData;
     }
 
     removeTyping();
 
-    // Fallback if response is still empty
+    // Final Reply display (Jo n8n se aaya hai wahi dikhega)
     if (!botResponse || botResponse === "{}" || botResponse === "[]") {
-      addMessage("I'm sorry, I couldn't process that. Please try again.", 'bot');
+      addMessage("I am here to help you with research and math", 'bot');
     } else {
       addMessage(botResponse, 'bot');
     }
@@ -133,11 +113,11 @@ async function sendMessage() {
   } catch (err) {
     console.error("Fetch Error:", err);
     removeTyping();
-    addMessage("Error: Could not connect to ZenovaAI. Please check your connection.", 'bot');
+    addMessage("Connection problem please try again", 'bot');
   }
 }
 
-// Typing Indicator Functions
+// ⌨️ Typing Indicator
 function showTyping() {
   const box = document.getElementById('chatBox');
   if (document.getElementById('typing')) return;
@@ -154,34 +134,25 @@ function removeTyping() {
   if (typing) typing.remove();
 }
 
-// Suggestion pills helper
+// 💡 Suggestions
 function useSuggestion(text) {
-  const input = document.getElementById('userInput');
-  if (input) {
-    input.value = text;
-    sendMessage();
-  }
+  document.getElementById('userInput').value = text;
+  sendMessage();
 }
 
-// Clear memory logic
+// 🗑️ Clear Memory
 function clearMemory(event) {
-  if (event) {
-    event.preventDefault();
-  }
-  if (confirm('Clear all conversation history?')) {
-    conversationHistory = [];
+  if (event) event.preventDefault();
+  if (confirm('Clear chat history?')) {
     localStorage.removeItem(MEMORY_KEY);
-    location.reload(); // Simplest way to reset UI
+    location.reload(); 
   }
   return false;
 }
 
-// Event Listeners
-document.getElementById('userInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    sendMessage();
-  }
+// 🎧 Listeners
+document.getElementById('userInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') sendMessage();
 });
 
 window.addEventListener('DOMContentLoaded', loadMemory);
-
