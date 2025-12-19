@@ -15,7 +15,6 @@ function loadMemory() {
     const saved = localStorage.getItem(MEMORY_KEY);
     if (saved) {
       conversationHistory = JSON.parse(saved);
-      
       const box = document.getElementById('chatBox');
       conversationHistory.forEach(msg => {
         const div = document.createElement('div');
@@ -31,7 +30,6 @@ function loadMemory() {
         if (welcome) welcome.remove();
         if (suggestions) suggestions.remove();
       }
-      
       box.scrollTop = box.scrollHeight;
     }
   } catch (err) {
@@ -46,11 +44,9 @@ function saveToMemory(text, sender) {
     sender: sender,
     timestamp: new Date().toISOString()
   });
-  
   if (conversationHistory.length > MAX_HISTORY) {
     conversationHistory = conversationHistory.slice(-MAX_HISTORY);
   }
-  
   try {
     localStorage.setItem(MEMORY_KEY, JSON.stringify(conversationHistory));
   } catch (err) {
@@ -61,21 +57,22 @@ function saveToMemory(text, sender) {
 // Function to add message to UI
 function addMessage(text, sender) {
   const box = document.getElementById('chatBox');
+  if (!box) return;
   const div = document.createElement('div');
   div.className = `msg ${sender}`;
   div.innerText = text;
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
-  
   saveToMemory(text, sender);
 }
 
-// 🔹 FIXED: sendMessage handles different n8n response formats
+// 🔹 FULLY FIXED: sendMessage function
 async function sendMessage() {
   const input = document.getElementById('userInput');
   const msg = input.value.trim();
   if (!msg) return;
 
+  // UI cleanup on first message
   if (isFirstMessage) {
     const welcome = document.getElementById('welcomeMessage');
     const suggestions = document.getElementById('suggestions');
@@ -89,11 +86,6 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const recentHistory = conversationHistory.slice(-10).map(m => ({
-      role: m.sender === 'user' ? 'user' : 'assistant',
-      content: m.text
-    }));
-
     const emailInput = document.getElementById('userEmail');
     const currentUserEmail = emailInput ? emailInput.value.trim() : "user@example.com";
 
@@ -103,42 +95,49 @@ async function sendMessage() {
       body: JSON.stringify({ 
         email: currentUserEmail,
         query: msg,
-        history: recentHistory
+        history: conversationHistory.slice(-10) 
       })
     });
 
-    // 💡 The Fix starts here: Determine the type of response
-    const data = await res.json();
-    removeTyping();
+    // 1. Get response as Text first (Safest way)
+    const rawData = await res.text();
+    let botResponse = "";
 
-    let botResponse = "(No response)";
-
-    if (typeof data === 'string') {
-      // If n8n sends raw text: "I only tell you about researching..."
-      botResponse = data;
-    } else if (data.reply) {
-      // If n8n sends { "reply": "..." }
-      botResponse = data.reply;
-    } else if (data.output) {
-      // If n8n sends { "output": "..." }
-      botResponse = data.output;
-    } else if (Array.isArray(data) && data.length > 0) {
-      // If n8n sends an array, check the first item
-      botResponse = data[0].reply || data[0].output || data[0].text || JSON.stringify(data[0]);
-    } else if (data.text) {
-        botResponse = data.text;
+    try {
+      // 2. Try to parse as JSON
+      const parsed = JSON.parse(rawData);
+      
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // If n8n returns an array: [ { "output": "..." } ]
+        botResponse = parsed[0].output || parsed[0].reply || parsed[0].text || JSON.stringify(parsed[0]);
+      } else if (typeof parsed === 'object') {
+        // If n8n returns an object: { "output": "..." }
+        botResponse = parsed.output || parsed.reply || parsed.text || JSON.stringify(parsed);
+      } else {
+        botResponse = parsed.toString();
+      }
+    } catch (e) {
+      // 3. If parsing fails, it's already a plain string
+      botResponse = rawData;
     }
 
-    addMessage(botResponse, 'bot');
+    removeTyping();
+
+    // Fallback if response is still empty
+    if (!botResponse || botResponse === "{}" || botResponse === "[]") {
+      addMessage("I'm sorry, I couldn't process that. Please try again.", 'bot');
+    } else {
+      addMessage(botResponse, 'bot');
+    }
 
   } catch (err) {
     console.error("Fetch Error:", err);
     removeTyping();
-    addMessage("(Error connecting to webhook)", 'bot');
+    addMessage("Error: Could not connect to ZenovaAI. Please check your connection.", 'bot');
   }
 }
 
-// Function to show typing dots
+// Typing Indicator Functions
 function showTyping() {
   const box = document.getElementById('chatBox');
   if (document.getElementById('typing')) return;
@@ -150,66 +149,39 @@ function showTyping() {
   box.scrollTop = box.scrollHeight;
 }
 
-// Function to remove typing dots
 function removeTyping() {
   const typing = document.getElementById('typing');
   if (typing) typing.remove();
 }
 
-// Function for suggestion pills
+// Suggestion pills helper
 function useSuggestion(text) {
   const input = document.getElementById('userInput');
-  input.value = text;
-  sendMessage();
+  if (input) {
+    input.value = text;
+    sendMessage();
+  }
 }
 
-// 🧠 Clear all memory
+// Clear memory logic
 function clearMemory(event) {
   if (event) {
     event.preventDefault();
-    event.stopPropagation();
   }
-  
-  if (confirm('Clear all conversation history? This cannot be undone.')) {
-    try {
-      conversationHistory = [];
-      localStorage.removeItem(MEMORY_KEY);
-
-      const box = document.getElementById('chatBox');
-      if (box) {
-        box.innerHTML = ''; 
-      }
-
-      isFirstMessage = true;
-
-      const welcomeHTML = `
-        <div class="welcome-message" id="welcomeMessage">
-          <h2>How Can I Help You This Morning?</h2>
-          <p>I'm here to assist with anything you need</p>
-        </div>
-        <div class="suggestions" id="suggestions">
-          <div class="suggestion-pill" onclick="useSuggestion('Write an email')">✍️ Write an email</div>
-          <div class="suggestion-pill" onclick="useSuggestion('Explain a concept')">🧠 Explain a concept</div>
-          <div class="suggestion-pill" onclick="useSuggestion('Plan my day')">📅 Plan my day</div>
-          <div class="suggestion-pill" onclick="useSuggestion('Create content')">🎨 Create content</div>
-        </div>
-      `;
-      box.insertAdjacentHTML('beforeend', welcomeHTML);
-      
-    } catch (error) {
-      console.error('Error clearing memory:', error);
-    }
+  if (confirm('Clear all conversation history?')) {
+    conversationHistory = [];
+    localStorage.removeItem(MEMORY_KEY);
+    location.reload(); // Simplest way to reset UI
   }
   return false;
 }
 
-// Enter key listener
+// Event Listeners
 document.getElementById('userInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
     sendMessage();
   }
 });
 
-// Load memory when page loads
 window.addEventListener('DOMContentLoaded', loadMemory);
 
