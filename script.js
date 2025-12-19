@@ -1,5 +1,5 @@
 // Your original webhook - NOT CHANGED
-const WEBHOOK_URL = "https://shehroz910.app.n8n.cloud/webhook/c895789f-aa80-4df3-b3bd-ac4acf3608ff";
+const WEBHOOK_URL = "https://ahaseeb590.app.n8n.cloud/webhook-test/f279e60d-ce73-4003-8fd1-75f99a8770aa";
 
 // Track if first message to remove welcome screen
 let isFirstMessage = true;
